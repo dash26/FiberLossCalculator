@@ -1,0 +1,315 @@
+ <!DOCTYPE html>
+ <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+ <meta charset="UTF-8">
+
+ <!-- If IE use the latest rendering engine -->
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+ <!-- Set the page to the width of the device and set the zoon level -->
+ <meta name="viewport" content="width = device-width, initial-scale = 1">
+ <title>Loss Calculator</title>
+ <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+ <!--Required scripts-->
+   <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+   <!-- External files for exporting -->
+   <script src="https://www.igniteui.com/js/external/FileSaver.js"></script>
+   <script src="https://www.igniteui.com/js/external/Blob.js"></script>
+
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/infragistics.core.js"></script>
+
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_core.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_collections.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_text.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_io.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_ui.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.documents.core_core.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_collectionsextended.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.excel_core.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_threading.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.ext_web.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.xml.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.documents.core_openxml.js"></script>
+   <script type="text/javascript" src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/modules/infragistics.excel_serialization_openxml.js"></script>
+
+
+ <style>
+ .jumbotron{
+     background-color:#2E2D88;
+     color:white;
+ }
+ /* Adds borders for tabs */
+ .tab-content {
+     border-left: 1px solid #ddd;
+     border-right: 1px solid #ddd;
+     border-bottom: 1px solid #ddd;
+     padding: 10px;
+ }
+ .nav-tabs {
+     margin-bottom: 0;
+ }
+.textinjumbo{
+  text-align: center;
+  font-size:1.5em;
+}
+.average_disp{
+  font-size:1.5em;
+  text-align: center;
+  font-weight: bold;
+}
+ </style>
+
+ </head>
+
+
+<body >
+<div class='jumbotron textinjumbo'>Fiber Loss Calculator</div>
+<br><br>
+<div class="container">
+<div class="well">
+  <div class="form-group">
+    <label for="input1"> Enter the number of Fibers </label>
+    <input type="text" id="input1" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="input2"> Enter the number of Tubes </label>
+    <input type="text" id="input2" class="form-control">
+  </div>
+
+  <button type="button" class="btn btn-danger btn-lg" onclick="tubesorno()"> Enter </button>
+</div>
+</div>
+
+<div class='container'>
+  <div class="well" id='firstContainer'>
+  </div>
+</div>
+
+<div class='container'>
+  <div class="well" id='secondContainer'>
+  </div>
+</div>
+
+<div class='container'>
+  <div class="well" id='thirdContainer'>
+  </div>
+</div>
+
+<div class='container'>
+  <div class="well" id='fourthContainer'>
+  </div>
+</div>
+
+
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</body>
+
+<script type="text/javascript">
+var fiber_colours = [];
+var tube_colours = [];
+var AtoBloss=[];
+var BtoAloss=[];
+var average=0;
+var avgloss = [];
+
+  function tubesorno(){
+    var num_tubes = document.getElementById('input2').value;
+    var num_fibers = document.getElementById('input1').value;
+    if (num_tubes>0) {
+      with_tubes();
+    }else {
+      without_tubes();
+    }
+  }
+  function with_tubes() {
+    var num_fibers = document.getElementById('input1').value;
+    var num_tubes = document.getElementById('input2').value;
+
+    var i = 0;
+    var text = "<div class='jumbotron textinjumbo'> Colour of Tube </div>";
+    for (var i = 0; i < (Number(num_tubes))+1; i++) {
+      if( i == num_tubes){
+        text+="<button class='btn btn-lg btn-success'  onclick='fun2()'> Next </button>";
+      }else {
+        text+= " <label for='inp"+String(i+1)+"'> Enter the Colour of Tube "+String(i+1)+" </label><input type='text' id='inp"+String(i+1)+"' class='form-control'><br>";
+      }
+    }
+    document.getElementById('firstContainer').innerHTML = text;
+  }
+
+  function fun2(){
+    var num_fibers = document.getElementById('input1').value;
+    var num_tubes = document.getElementById('input2').value;
+    var text = "<div class='jumbotron textinjumbo'> Colour of Fiber </div>";
+    var i = 0;
+
+    for (var i = 0; i < (Number(num_tubes)); i++) {
+      tube_colours.push(document.getElementById('inp'+String(i+1)+'').value);
+    }
+    var count =0;
+    for (var i = 0; i < (Number(num_fibers))+1; i++) {
+      if (i==((Number(num_fibers)))) {
+        text+= "<button class='btn btn-success btn-lg' onclick='fun3()'>Next</button><br><br>"
+      }else {
+        for (var j = 0; j < ((Number(num_fibers) / Number(num_tubes))); j++){
+            if(count <= num_fibers-1){
+              count+=1;
+              text +=  " <label for='inpp"+String(count)+"'> Enter the Fiber colour "+String(j+1)+" for "+String(tube_colours[i])+" Tube</label><input type='text' id='inpp"+String(count)+"' class='form-control'><br>";
+          }
+        }
+      }
+    }
+    document.getElementById('secondContainer').innerHTML = text;
+  }
+
+  function fun3(){
+    var num_fibers = document.getElementById('input1').value;
+    var num_tubes = document.getElementById('input2').value;
+    var count=1;
+    for(var i=0;i<num_fibers;i++){
+      for (var j = 0; j < ((Number(num_fibers) / Number(num_tubes))); j++) {
+        if(count <= Number(num_fibers)){
+
+          fiber_colours.push((String(tube_colours[i]))+"-"+(String(document.getElementById('inpp'+String(count)+'').value)));
+          count+=1;
+
+       }
+      }
+    }
+    var text = "<div class='jumbotron textinjumbo'> A to B Loss </div>";
+    for (i=0 ; i<((Number(num_fibers))+1); i++) {
+      if (i==num_fibers) {
+        text+= "<button class='btn btn-success btn-lg' onclick='calcAtoB()'>Next</button><br><br>"
+      }else {
+        text +=  " <label for='inpt"+String(i+1)+"'> Enter the A to B Loss of "+String(fiber_colours[i])+" Fiber </label><input type='text' id='inpt"+String(i+1)+"' class='form-control'><br>";
+      }
+   }
+   document.getElementById('secondContainer').innerHTML =text;
+  }
+  function without_tubes() {
+    var num_fibers = document.getElementById('input1').value;
+    var i = 0;
+    var text="<div class='jumbotron textinjumbo'> Colour of the Fiber</div>";
+    for(i=0 ; i<(Number(num_fibers)+1); i++){
+     if (i==num_fibers) {
+       text+= "<button class='btn btn-success btn-lg' onclick='calcLossWithoutTube()'>Next</button><br><br>"
+     }else {
+       text +=  " <label for='inp"+String(i+1)+"'> Enter the Colour of Fiber "+String(i+1)+" </label><input type='text' id='inp"+String(i+1)+"' class='form-control'><br>";
+     }
+    }
+
+    document.getElementById('firstContainer').innerHTML =text;
+  }
+  function calcLossWithoutTube(){
+    var text="<div class='jumbotron textinjumbo'> A to B Loss</div>";
+    var num_fibers = document.getElementById('input1').value;
+    var i  =0;
+
+     for (i=0 ; i<(Number(num_fibers)); i++) {
+          fiber_colours.push(document.getElementById('inp'+String(i+1)+'').value);
+    }
+
+    for (i=0 ; i<((Number(num_fibers))+1); i++) {
+      if (i==num_fibers) {
+        text+= "<button class='btn btn-success btn-lg' onclick='calcAtoB()'>Next</button><br><br>"
+      }else {
+        text +=  " <label for='inpt"+String(i+1)+"'> Enter the A to B Loss of "+String(fiber_colours[i])+" Fiber </label><input type='text' id='inpt"+String(i+1)+"' class='form-control'><br>";
+      }
+   }
+   document.getElementById('secondContainer').innerHTML =text;
+  }
+  function calcAtoB(){
+    var text="<div class='jumbotron textinjumbo'> B to A Loss</div>";
+    var num_fibers = document.getElementById('input1').value;
+    var i  =0;
+
+     for (i=0 ; i<(Number(num_fibers)); i++) {
+          AtoBloss.push(document.getElementById('inpt'+String(i+1)+'').value);
+    }
+
+    for (i=0 ; i<((Number(num_fibers))+1); i++) {
+      if (i==num_fibers) {
+        text+= "<button class='btn btn-success btn-lg' onclick='calcBtoA()'>Next</button><br><br>"
+      }else {
+        text +=  " <label for='inptt"+String(i+1)+"'> Enter the B to A Loss of "+String(fiber_colours[i])+" Fiber </label><input type='text' id='inptt"+String(i+1)+"' class='form-control'><br>";
+      }
+   }
+   document.getElementById('thirdContainer').innerHTML =text;
+  }
+  function calcBtoA(){
+    var i  =0;
+    var num_fibers = document.getElementById('input1').value;
+     for (i=0 ; i<(Number(num_fibers)); i++) {
+          BtoAloss.push(document.getElementById('inptt'+String(i+1)+'').value);
+    }
+    i=0;
+
+    for(i=0 ; i<(Number(num_fibers)); i++){
+      average += ((Number(AtoBloss[i])+ Number(BtoAloss[i]))/2);
+      avgloss.push(((Number(AtoBloss[i])+ Number(BtoAloss[i]))/2));
+
+    }
+    average = average /(Number(num_fibers));
+     text = "<p class='average_disp'>The Average Loss is "+String(average)+"dB</p>";
+     text+= "<button class='btn btn-primary btn-lg' onclick='createTableWorkbook()' id='exportButton'> Print Report </button>"
+    document.getElementById('fourthContainer').innerHTML =text;
+  }
+
+    function createTableWorkbook() {
+           var workbook = new $.ig.excel.Workbook($.ig.excel.WorkbookFormat.excel2007);
+            var num_fibers = document.getElementById('input1').value;
+            var num_tubes = document.getElementById('input2').value;
+            var sheet = workbook.worksheets().add('Sheet1');
+            sheet.columns(0).setWidth(90, $.ig.excel.WorksheetColumnWidthUnit.pixel);
+            sheet.columns(1).setWidth(200, $.ig.excel.WorksheetColumnWidthUnit.pixel);
+            sheet.columns(2).setWidth(110, $.ig.excel.WorksheetColumnWidthUnit.pixel);
+            sheet.columns(3).setWidth(110, $.ig.excel.WorksheetColumnWidthUnit.pixel);
+
+
+            // Create a to-do list table with columns for tasks and their priorities.
+            sheet.getCell('A1').value('S.No');
+            sheet.getCell('B1').value('Fiber / Tube colour');
+            sheet.getCell('C1').value('A-B Loss');
+            sheet.getCell('D1').value('B-A Loss');
+            sheet.getCell('E1').value('Average');
+
+            var table = sheet.tables().add('A1:D8', true);
+
+            // Specify the style to use in the table (this can also be specified as an optional 3rd argument to the 'add' call above).
+            table.style(workbook.standardTableStyles('TableStyleMedium2'))
+
+            // Populate the table with data
+
+            var i=0;
+            for (var i = 0; i < Number(num_fibers) ; i++) {
+               sheet.getCell('A'+String(i+2)+'').value(i+1);
+            }
+            for (var i = 0; i < Number(num_fibers) ; i++) {
+               sheet.getCell('B'+String(i+2)+'').value(fiber_colours[i]);
+            }
+            for (var i = 0; i < Number(num_fibers) ; i++) {
+               sheet.getCell('C'+String(i+2)+'').value(AtoBloss[i]);
+            }
+            for (var i = 0; i < Number(num_fibers) ; i++) {
+               sheet.getCell('D'+String(i+2)+'').value(BtoAloss[i]);
+            }
+            for (var i = 0; i < Number(num_fibers) ; i++) {
+               sheet.getCell('E'+String(i+2)+'').value(avgloss[i]);
+            }
+            sheet.getCell('B'+String(i+4)+'').value("Average loss");
+            sheet.getCell('C'+String(i+4)+'').value(String(average)+ "dB");
+            // Save the workbook
+            saveWorkbook(workbook, "Report.xlsx");
+        }
+
+        function saveWorkbook(workbook, name) {
+            workbook.save({ type: 'blob' }, function (data) {
+                saveAs(data, name);
+            }, function (error) {
+                alert('Error exporting: : ' + error);
+            });
+        }
+</script>
+</html>
